@@ -1,0 +1,14 @@
+.editor {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.block {
+  display: inline-block;
+  border-width: 1px;
+  border-color: 1px;
+  border-style: solid;
+}

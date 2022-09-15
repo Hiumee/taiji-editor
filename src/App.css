@@ -1,0 +1,19 @@
+.app {
+  min-height: 100vh;
+  background-color: bisque;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding-top: 1rem;
+  padding-left: 1rem;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.editor-container {
+  display: flex;
+  flex-grow: 1;
+  padding: 2em;
+}

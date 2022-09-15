@@ -1,0 +1,48 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 50px;
+}
+
+.tile-border {
+  background-color: gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  width: 90%;
+  margin: 5%;
+}
+
+
+.tile-fixed-border {
+  background-color: #404040;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  width: 90%;
+  margin: 5%;
+  border-width: 4px;
+  border-color: gray;
+  border-style: dashed;
+}
+
+.tile-border:hover {
+  background-color: white;
+}
+
+.tile-fixed-border:hover {
+  border-color: white;
+}
+
+.tile {
+  background-color: #404040;
+  width: 85%;
+  height: 85%;
+}
+
+.active {
+  background-color: gray;
+}

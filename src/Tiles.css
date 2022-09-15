@@ -1,0 +1,12 @@
+.tiles {
+  display: flex;
+  flex-direction: column;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #404040;
+  background-color: #404040;
+}
+
+.line {
+  display: flex;
+}
