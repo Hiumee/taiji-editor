@@ -9,4 +9,4 @@ A web based editor for making and solving puzzles from the game [Taiji](https://
 
 [Demo link](https://hiumee.github.io/react/taiji/)
 
-![image](https://user-images.githubusercontent.com/42638867/190605890-d397c883-c1b9-4149-bc03-af9eff14f72d.png)
+![image](https://user-images.githubusercontent.com/42638867/190691199-dfa730bd-2056-41d9-a700-0026333a4f53.png)
