@@ -46,7 +46,7 @@ function Tools({onEditToggle, controls, setTool, updateSize, selectColor, clearB
       <div className="picker">
         <Tool controls={controls} setTool={setTool} name={'Toggler'} tool={'toggler'}  />
         <Tool controls={controls} setTool={setTool} name={'Fixer'} tool={'fixer'}  />
-        <Tool controls={controls} setTool={setTool} name={'Disable'} tool={'disable'}  />
+        <Tool controls={controls} setTool={setTool} name={'Disabler'} tool={'disable'}  />
         <div className="multi-picker">
           <Tool controls={controls} setTool={setTool} name={'Dots-1'} tool={'dots-1'} image={'dots-1'} />
           <Tool controls={controls} setTool={setTool} name={'Dots-2'} tool={'dots-2'} image={'dots-2'} />

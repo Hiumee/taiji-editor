@@ -14,11 +14,12 @@ function Tiles({ board, onTileHover, onTileClick, incorrectTiles }: props) {
     <div className='tiles no-select' id="board">
       {
         board.tiles.map(
-          (line) => 
-          <div className='line'>
+          (line, index) => 
+          <div className='line' key={index}>
           {
             line.map(
               (tile) => <TileComponent 
+                          key={tile.x}
                           tile={tile} 
                           mouseDownCallback={(e: any) => onTileClick(e, tile)}
                           hoverCallback={() => onTileHover(tile)}

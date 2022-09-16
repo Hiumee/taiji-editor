@@ -92,11 +92,12 @@ function Editor() {
   }
 
   const openScreenshot = () => {
-    const board = document.getElementById("board")
-    if (board) {
-      html2canvas(board).then(canvas => {
-          const image = canvas.toDataURL()
-          const w = window.open(image);
+    // TODO: Fix images not showing - Switch to svg?
+    const boardElement = document.getElementById("board")
+    if (boardElement) {
+      html2canvas(boardElement).then(canvas => {
+          const image = canvas.toDataURL('image/png')
+          const w = window.open();
           if (w) {
             w.document.write('<iframe title="taiji" src="' + image  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
           }
@@ -152,7 +153,9 @@ function Editor() {
       />
       <div className='controls'>
         <div className='normal-controls'>
-          <button className='screenshot' onClick={openScreenshot}>Screenshot</button>
+          {
+            // <button className='screenshot' onClick={openScreenshot}>Screenshot</button>
+          }
           <button className='check' onClick={checkSolution}>Check</button>
           <div>{checkResult}</div>
         </div>
