@@ -9,8 +9,8 @@ import { checkBoardSolution } from './Checker';
 
 function Editor() {
   const [controls, setControls] = useState(newControls());
-  const [board, setBoard] = useState(newBoard(controls.width,controls.height));
-  const [lastHoverTile, setLastHoverTile] = useState({x: 0, y: 0})
+  const [board, setBoard] = useState(newBoard(controls.width, controls.height));
+  const [lastHoverTile, setLastHoverTile] = useState({ x: 0, y: 0 })
   const [checkResult, setCheckResult] = useState("Result here")
   const [incorrectTiles, setIncorrectTiles] = useState<Tile[]>([])
 
@@ -31,7 +31,7 @@ function Editor() {
     e.preventDefault();
   }
 
-  const handleTileClick = (tile: Tile) => { 
+  const handleTileClick = (tile: Tile) => {
     setIncorrectTiles([])
     if (!controls.editMode) {
       if (tile.state === 'normal') {
@@ -52,7 +52,7 @@ function Editor() {
           setBoard(toggleDisableTile(board, tile))
           break;
         default:
-          setBoard(setDecorator(board, tile, {type: controls.tool, color: controls.color}))
+          setBoard(setDecorator(board, tile, { type: controls.tool, color: controls.color }))
           break;
       }
     }
@@ -64,12 +64,12 @@ function Editor() {
       setBoard(toggleHightlight(board, tile, !tile.highlighted))
       setControls(controlsSetFillMode(controlsMouseDown(controlsSetActiveFill(controls, !tile.highlighted)), "highlight"))
     } else {
-      setBoard(setDecorator(board, tile, {type: '', color: ''}))
+      setBoard(setDecorator(board, tile, { type: '', color: '' }))
     }
   }
 
   const handleTileHover = (tile: Tile) => {
-    setLastHoverTile({x: tile.y, y: tile.x})
+    setLastHoverTile({ x: tile.y, y: tile.x })
     if (!controls.editMode) {
       if (controls.fillMode === "active" && tile.state === 'normal' && controls.mouseDown) {
         setBoard(toggleTile(board, tile, controls.activeFill))
@@ -109,13 +109,13 @@ function Editor() {
     const boardElement = document.getElementById("board")
     if (boardElement) {
       html2canvas(boardElement).then(canvas => {
-          const image = canvas.toDataURL('image/png')
-          const w = window.open();
-          if (w) {
-            w.document.write('<iframe title="taiji" src="' + image  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
-          }
+        const image = canvas.toDataURL('image/png')
+        const w = window.open();
+        if (w) {
+          w.document.write('<iframe title="taiji" src="' + image + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
         }
-      ) 
+      }
+      )
     }
   }
 
@@ -155,14 +155,14 @@ function Editor() {
   }
 
   return (
-    <div className="editor" onMouseUp={() => setControls(controlsMouseUp(controls))} 
+    <div className="editor" onMouseUp={() => setControls(controlsMouseUp(controls))}
       onDragStart={preventDragHandler}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       tabIndex={0}>
       <Tiles
         board={board}
-        onTileClick={(event: any, tile: Tile) => { event.button === 0 ? handleTileClick(tile) : ( event.button === 1 && handleTileMiddleClick(tile)) }}
+        onTileClick={(event: any, tile: Tile) => { event.button === 0 ? handleTileClick(tile) : (event.button === 1 && handleTileMiddleClick(tile)) }}
         onTileHover={(tile: Tile) => { handleTileHover(tile) }}
         incorrectTiles={incorrectTiles}
       />
