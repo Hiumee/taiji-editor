@@ -21,7 +21,7 @@ function Tools({onEditToggle, controls, setTool, updateSize, selectColor, clearB
     <div className={mainClass}>
       <div className='toggle-field'>
         <label className="switch">
-          <input type="checkbox" onClick={onEditToggle} />
+          <input type="checkbox" onClick={onEditToggle} defaultChecked={controls.editMode} />
           <span className="slider"></span>
         </label>
         <div>Edit mode</div>
@@ -38,9 +38,9 @@ function Tools({onEditToggle, controls, setTool, updateSize, selectColor, clearB
         <Color selectColor={selectColor} color="#ff0000" selected={controls.color} />
         <Color selectColor={selectColor} color="#0000ff" selected={controls.color} />
         <Color selectColor={selectColor} color="#00ff00" selected={controls.color} />
-        <Color selectColor={selectColor} color="#ffff00" selected={controls.color} />
+        <Color selectColor={selectColor} color="#d29a0e" selected={controls.color} />
         <Color selectColor={selectColor} color="#00ffff" selected={controls.color} />
-        <Color selectColor={selectColor} color="#ff00ff" selected={controls.color} />
+        <Color selectColor={selectColor} color="#a106ff" selected={controls.color} />
         <Color selectColor={selectColor} color="#ffffff" selected={controls.color} />
       </div>
       <div className="picker">

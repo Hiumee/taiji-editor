@@ -88,8 +88,15 @@ const checkDiamond = (board: Board, tile: Tile): boolean => {
         toVisit.pop()
 
         if (currentTile.state !== 'disabled' && currentTile.active === tile.active) {
-            if (currentTile.decorator.color === tile.decorator.color) {
-                // TODO: yellow, purple match the flowers
+            if (!currentTile.decorator.type.includes("mill") && currentTile.decorator.color === tile.decorator.color) {
+                actualScore++
+            }
+
+            if (currentTile.decorator.type.includes("mill") && currentTile.decorator.type !== 'mill-0' && tile.decorator.color === "#d29a0e") {
+                actualScore++
+            }
+
+            if (currentTile.decorator.type.includes("mill") && currentTile.decorator.type !== 'mill-4' && tile.decorator.color === "#a106ff") {
                 actualScore++
             }
 
