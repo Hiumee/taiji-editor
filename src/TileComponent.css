@@ -29,6 +29,15 @@
   border-style: dashed;
 }
 
+.tile-disabled-border {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  width: 90%;
+  margin: 5%;
+}
+
 .tile-border:hover {
   background-color: white;
 }
@@ -45,4 +54,20 @@
 
 .active {
   background-color: gray;
+}
+
+.highlight.tile-fixed-border {
+  border-color: rgb(190, 0, 190);
+}
+
+.highlight.tile-fixed-border:hover {
+  border-color: rgb(255, 147, 255);
+}
+
+.highlight.tile-border {
+  background-color: rgb(190, 0, 190);
+}
+
+.highlight.tile-border:hover {
+  background-color: rgb(255, 147, 255);
 }

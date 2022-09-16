@@ -4,11 +4,12 @@ export interface Controls {
   editMode: boolean,
   tool: string,
   width: number,
-  height: number
+  height: number,
+  fillMode: "active" | "highlight"
 }
 
 function newControls(): Controls {
-  return { mouseDown: false, activeFill: false, editMode: false, tool: "fixer", width: 10, height: 10 }
+  return { mouseDown: false, activeFill: false, editMode: false, tool: "fixer", width: 10, height: 10, fillMode: 'active' }
 }
 
 function controlsMouseUp(controls: Controls): Controls {
@@ -39,4 +40,8 @@ function controlsSetSize(controls: Controls, width: number, height: number) {
   return {...controls, width: width, height: height}
 }
 
-export { newControls, controlsMouseUp, controlsMouseDown, controlsSetActiveFill, controlsEnableEditMode, controlsDisableEditMode, controlsSetTool, controlsSetSize };
+function controlsSetFillMode(controls: Controls, fillMode: "active" | "highlight") {
+  return {...controls, fillMode: fillMode}
+}
+
+export { newControls, controlsMouseUp, controlsMouseDown, controlsSetActiveFill, controlsEnableEditMode, controlsDisableEditMode, controlsSetTool, controlsSetSize, controlsSetFillMode };

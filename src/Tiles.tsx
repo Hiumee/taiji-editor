@@ -5,12 +5,12 @@ import TileComponent from './TileComponent';
 interface props {
   board: Board,
   onTileHover: (tile: Tile) => void,
-  onTileClick: (tile: Tile) => void
+  onTileClick: (event: any, tile: Tile) => void
 }
 
 function Tiles({ board, onTileHover, onTileClick }: props) {
   return (
-    <div className='tiles'>
+    <div className='tiles' id="board">
       {
         board.tiles.map(
           (line) => 
@@ -19,7 +19,7 @@ function Tiles({ board, onTileHover, onTileClick }: props) {
             line.map(
               (tile) => <TileComponent 
                           tile={tile} 
-                          mouseDownCallback={() => onTileClick(tile)}
+                          mouseDownCallback={(e: any) => onTileClick(e, tile)}
                           hoverCallback={() => onTileHover(tile)}
                         />
             )

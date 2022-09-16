@@ -10,7 +10,7 @@ export interface Tile {
   decorator: string,
   x: number,
   y: number,
-  state: string
+  state: 'normal' | 'fixed' | 'disabled'
 }
 
 function newBoard(width: number = 3, height: number = 3): Board {
@@ -19,7 +19,7 @@ function newBoard(width: number = 3, height: number = 3): Board {
     let line = []
     for (let j = 0; j<height; j++) {
       
-      line.push( {active: false, highlighted: false, decorator: "", x: i, y: j, state: 'normal'} )
+      line.push( {active: false, highlighted: false, decorator: "", x: i, y: j, state: 'normal'} as const )
     }
     tiles.push(line)
   }
@@ -40,8 +40,20 @@ function toggleFixTile(board: Board, toggleTile: Tile): Board {
 
 function toggleDisableTile(board: Board, toggleTile: Tile): Board {
   return {...board, tiles: board.tiles.map(line => (
-    line.map(tile => (tile === toggleTile ? {...tile, state: toggleTile.state !== 'disabled' ? 'disabled' : 'normal'} : tile))
+    line.map(tile => (tile === toggleTile ? {...tile, active: (toggleTile.state !== 'disabled' ? false : tile.active), state: toggleTile.state !== 'disabled' ? 'disabled' : 'normal'} : tile))
   ))}
 }
 
-export { newBoard, toggleTile, toggleFixTile, toggleDisableTile };
+function toggleHightlight(board: Board, toggleTile: Tile, state: boolean): Board {
+  return {...board, tiles: board.tiles.map(line => (
+    line.map(tile => (tile === toggleTile ? {...tile, highlighted: state} : tile))
+  ))}
+}
+
+function resetBoard(board: Board): Board {
+  return {...board, tiles: board.tiles.map(line => (
+    line.map(tile => { return {...tile, highlighted: false, active: (tile.state === "normal" ? false : tile.active) }})
+  ))}
+}
+
+export { newBoard, toggleTile, toggleFixTile, toggleDisableTile, toggleHightlight, resetBoard };
