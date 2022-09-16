@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import html2canvas from 'html2canvas';
 import './Editor.css';
 import Tiles from './Tiles';
-import { newBoard, Tile, toggleDisableTile, toggleFixTile, toggleTile, toggleHightlight, resetBoard, setDecorator, setBoardSize } from './Board';
+import { newBoard, Tile, toggleDisableTile, toggleFixTile, toggleTile, toggleHightlight, resetBoard, setDecorator, setBoardSize, loadMap } from './Board';
 import { newControls, controlsMouseUp, controlsSetActiveFill, controlsMouseDown, controlsEnableEditMode, controlsDisableEditMode, controlsSetTool, controlsSetSize, controlsSetFillMode, controlsSetColor } from './Controls';
 import Tools from './Tools';
 import { checkBoardSolution } from './Checker';
@@ -13,6 +13,19 @@ function Editor() {
   const [lastHoverTile, setLastHoverTile] = useState({x: 0, y: 0})
   const [checkResult, setCheckResult] = useState("Result here")
   const [incorrectTiles, setIncorrectTiles] = useState<Tile[]>([])
+
+  useEffect(() => {
+    const windowUrl = window.location.search;
+    const params = new URLSearchParams(windowUrl);
+    const map = params.get('m')
+
+    if (map) {
+      //TODO: catch errors
+      const loadedBoard = loadMap(map)
+      setBoard(loadedBoard)
+      setControls(controlsSetSize(controls, loadedBoard.width, loadedBoard.height))
+    }
+  }, [])
 
   const preventDragHandler = (e: any) => {
     e.preventDefault();
@@ -115,6 +128,8 @@ function Editor() {
         const tile = board.tiles[lastHoverTile.x][lastHoverTile.y]
         handleTileMiddleClick(tile)
       }
+    } else if (e.keyCode === 32) { // Space
+      checkSolution()
     }
   }
 

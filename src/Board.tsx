@@ -31,6 +31,12 @@ function newBoard(width: number = 3, height: number = 3): Board {
   return { width: width, height: height, tiles: tiles }
 }
 
+function loadMap(data: string) {
+  // TODO: load data
+
+  return newBoard(5,5)
+}
+
 function toggleTile(board: Board, toggleTile: Tile, fill: boolean): Board {
   return {...board, tiles: board.tiles.map(line => (
     line.map(tile => (tile === toggleTile ? {...tile, active: fill} : tile))
@@ -85,4 +91,4 @@ function setBoardSize(board: Board, width: number, height: number): Board {
   return {...board, width: width, height: height, tiles: newTiles}
 }
 
-export { newBoard, toggleTile, toggleFixTile, toggleDisableTile, toggleHightlight, resetBoard, setDecorator, setBoardSize };
+export { newBoard, toggleTile, toggleFixTile, toggleDisableTile, toggleHightlight, resetBoard, setDecorator, setBoardSize, loadMap };

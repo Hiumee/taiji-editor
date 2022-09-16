@@ -21,7 +21,7 @@ function Tools({onEditToggle, controls, setTool, updateSize, selectColor, clearB
     <div className={mainClass}>
       <div className='toggle-field'>
         <label className="switch">
-          <input type="checkbox" onClick={onEditToggle} defaultChecked={controls.editMode} />
+          <input type="checkbox" onClick={onEditToggle} defaultChecked={controls.editMode} onKeyUp={e => e.preventDefault()} />
           <span className="slider"></span>
         </label>
         <div>Edit mode</div>
