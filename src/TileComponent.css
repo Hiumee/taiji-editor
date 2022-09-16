@@ -55,6 +55,32 @@
   justify-content: center;
 }
 
+.incorrect {
+  background-color: #404040;
+  width: 85%;
+  height: 85%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: flash 2s infinite;
+}
+
+.incorrect.active {
+  animation: flash-active 2s infinite;
+}
+
+@keyframes flash {
+  0% {background-color: #404040;}
+  50% {background-color: #ff7070;}
+  100% {background-color: #404040;}
+}
+
+@keyframes flash-active {
+  0% {background-color: gray;}
+  50% {background-color: #ff7070;}
+  100% {background-color: gray;}
+}
+
 .active {
   background-color: gray;
 }

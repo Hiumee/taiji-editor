@@ -3,11 +3,9 @@
 A web based editor for making and solving puzzles from the game [Taiji](https://store.steampowered.com/app/1141580/Taiji/)
 
 ### TODOs
-+ Add the actual puzzle components
-+ Solution checker
 + Share puzzles
 
-### In dev preview - Not working
+### In dev preview - Playable, no importable puzzles yet
 
 [Demo link](https://hiumee.github.io/react/taiji/)
 

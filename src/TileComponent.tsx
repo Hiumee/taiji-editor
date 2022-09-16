@@ -6,10 +6,11 @@ interface props {
   tile: Tile
   hoverCallback: () => void
   mouseDownCallback: (event: any) => void
+  incorrect: boolean
 }
 
-function TileComponent({tile, hoverCallback, mouseDownCallback}: props) {
-  const tileClass = `${tile.active ? 'active ' : ''}tile`;
+function TileComponent({tile, hoverCallback, mouseDownCallback, incorrect}: props) {
+  const tileClass = `${tile.active ? 'active ' : ''}${incorrect ? 'incorrect' : 'tile'}`;
 
   let border = ""
 

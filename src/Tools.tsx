@@ -9,9 +9,10 @@ interface props {
   setTool: (tool: string) => void
   updateSize: (width: number, height: number) => void
   selectColor: (color: string) => void
+  clearBoard: () => void
 }
 
-function Tools({onEditToggle, controls, setTool, updateSize, selectColor}: props) {
+function Tools({onEditToggle, controls, setTool, updateSize, selectColor, clearBoard}: props) {
 
   const mainClass = `${controls.editMode ? 'active-background' : 'inactive-background'} tools`;
 
@@ -24,6 +25,9 @@ function Tools({onEditToggle, controls, setTool, updateSize, selectColor}: props
           <span className="slider"></span>
         </label>
         <div>Edit mode</div>
+        <div>
+          <button onClick={clearBoard}>New board</button>
+        </div>  
       </div>
       <div className='size-container'>
         Width <input className="size-input" type="number" min={1} onChange={(e: any) => updateSize(e.target.value, controls.height)} value={controls.width}></input>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import html2canvas from 'html2canvas';
 import './Editor.css';
 import Tiles from './Tiles';
-import { newBoard, Tile, toggleDisableTile, toggleFixTile, toggleTile, toggleHightlight, resetBoard, setDecorator } from './Board';
+import { newBoard, Tile, toggleDisableTile, toggleFixTile, toggleTile, toggleHightlight, resetBoard, setDecorator, setBoardSize } from './Board';
 import { newControls, controlsMouseUp, controlsSetActiveFill, controlsMouseDown, controlsEnableEditMode, controlsDisableEditMode, controlsSetTool, controlsSetSize, controlsSetFillMode, controlsSetColor } from './Controls';
 import Tools from './Tools';
 import { checkBoardSolution } from './Checker';
@@ -12,12 +12,14 @@ function Editor() {
   const [board, setBoard] = useState(newBoard(controls.width,controls.height));
   const [lastHoverTile, setLastHoverTile] = useState({x: 0, y: 0})
   const [checkResult, setCheckResult] = useState("Result here")
+  const [incorrectTiles, setIncorrectTiles] = useState<Tile[]>([])
 
   const preventDragHandler = (e: any) => {
     e.preventDefault();
   }
 
   const handleTileClick = (tile: Tile) => { 
+    setIncorrectTiles([])
     if (!controls.editMode) {
       if (tile.state === 'normal') {
         setBoard(toggleTile(board, tile, !tile.active));
@@ -44,6 +46,7 @@ function Editor() {
   }
 
   const handleTileMiddleClick = (tile: Tile) => {
+    setIncorrectTiles([])
     if (!controls.editMode) {
       setBoard(toggleHightlight(board, tile, !tile.highlighted))
       setControls(controlsSetFillMode(controlsMouseDown(controlsSetActiveFill(controls, !tile.highlighted)), "highlight"))
@@ -65,6 +68,7 @@ function Editor() {
   }
 
   const toggleEditMode = () => {
+    setIncorrectTiles([])
     if (!controls.editMode) {
       setControls(controlsEnableEditMode(controls))
     } else {
@@ -73,14 +77,16 @@ function Editor() {
   }
 
   const setTool = (tool: string) => {
+    setIncorrectTiles([])
     if (controls.editMode) {
       setControls(controlsSetTool(controls, tool))
     }
   }
 
   const updateSize = (width: number, height: number) => {
+    setIncorrectTiles([])
     if (width !== controls.width || height !== controls.height) {
-      setBoard(newBoard(height, width))
+      setBoard(setBoardSize(board, width, height))
       setControls(controlsSetSize(controls, width, height))
     }
   }
@@ -100,7 +106,7 @@ function Editor() {
   }
 
   const handleKeyDown = (e: any) => {
-    console.log(e.keyCode)
+    setIncorrectTiles([])
     if (e.keyCode === 82) { // R
       setBoard(resetBoard(board))
     } else if (e.keyCode === 77) { // M
@@ -118,12 +124,18 @@ function Editor() {
   }
 
   const selectColor = (color: string) => {
+    setIncorrectTiles([])
     setControls(controlsSetColor(controls, color))
   }
 
   const checkSolution = () => {
     const wrongTiles = checkBoardSolution(board)
     setCheckResult((wrongTiles.length === 0 ? 'Correct' : 'Wrong'))
+    setIncorrectTiles(wrongTiles)
+  }
+
+  const clearBoard = () => {
+    setBoard(newBoard(controls.width, controls.height))
   }
 
   return (
@@ -136,13 +148,15 @@ function Editor() {
         board={board}
         onTileClick={(event: any, tile: Tile) => { event.button === 0 ? handleTileClick(tile) : ( event.button === 1 && handleTileMiddleClick(tile)) }}
         onTileHover={(tile: Tile) => { handleTileHover(tile) }}
+        incorrectTiles={incorrectTiles}
       />
       <div className='controls'>
         <div className='normal-controls'>
           <button className='screenshot' onClick={openScreenshot}>Screenshot</button>
-          <button className='Check' onClick={checkSolution}>{checkResult}</button>
+          <button className='check' onClick={checkSolution}>Check</button>
+          <div>{checkResult}</div>
         </div>
-        <Tools onEditToggle={toggleEditMode} updateSize={updateSize} controls={controls} setTool={setTool} selectColor={selectColor} />
+        <Tools onEditToggle={toggleEditMode} updateSize={updateSize} controls={controls} setTool={setTool} selectColor={selectColor} clearBoard={clearBoard} />
       </div>
     </div>
   );

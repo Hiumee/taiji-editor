@@ -5,10 +5,11 @@ import TileComponent from './TileComponent';
 interface props {
   board: Board,
   onTileHover: (tile: Tile) => void,
-  onTileClick: (event: any, tile: Tile) => void
+  onTileClick: (event: any, tile: Tile) => void,
+  incorrectTiles: Tile[]
 }
 
-function Tiles({ board, onTileHover, onTileClick }: props) {
+function Tiles({ board, onTileHover, onTileClick, incorrectTiles }: props) {
   return (
     <div className='tiles no-select' id="board">
       {
@@ -21,6 +22,7 @@ function Tiles({ board, onTileHover, onTileClick }: props) {
                           tile={tile} 
                           mouseDownCallback={(e: any) => onTileClick(e, tile)}
                           hoverCallback={() => onTileHover(tile)}
+                          incorrect={incorrectTiles.includes(tile)}
                         />
             )
           }

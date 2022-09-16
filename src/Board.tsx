@@ -11,7 +11,7 @@ export interface Decorator {
 
 export interface Tile {
   active: boolean,
-  highlighted: boolean,
+highlighted: boolean,
   decorator: Decorator,
   x: number,
   y: number,
@@ -20,9 +20,9 @@ export interface Tile {
 
 function newBoard(width: number = 3, height: number = 3): Board {
   let tiles: Array<Array<Tile>> = []
-  for (let i = 0; i<width; i++) {
+  for (let i = 0; i<height; i++) {
     let line: Array<Tile> = []
-    for (let j = 0; j<height; j++) {
+    for (let j = 0; j<width; j++) {
       
       line.push( {active: false, highlighted: false, decorator: {type: "", color: ""}, x: j, y: i, state: 'normal'} as const )
     }
@@ -63,8 +63,26 @@ function resetBoard(board: Board): Board {
 
 function setDecorator(board: Board, toggleTile: Tile, decorator: Decorator): Board {
   return {...board, tiles: board.tiles.map(line => (
-    line.map(tile => (tile === toggleTile ? {...tile, decorator: decorator} : tile))
+    line.map(tile => (tile === toggleTile ? {...tile, decorator: (decorator.type !== tile.decorator.type || decorator.color !== tile.decorator.color) ? decorator : {type: '', color: ''} } : tile))
   ))}
 }
 
-export { newBoard, toggleTile, toggleFixTile, toggleDisableTile, toggleHightlight, resetBoard, setDecorator };
+function setBoardSize(board: Board, width: number, height: number): Board {
+  let newTiles: Tile[][] = []
+
+  for (let i = 0; i<height; i++) {
+    let line: Array<Tile> = []
+    for (let j = 0; j<width; j++) {
+      if (j<board.width && i<board.height) {
+        line.push(board.tiles[i][j])
+      } else {
+        line.push( {active: false, highlighted: false, decorator: {type: "", color: ""}, x: j, y: i, state: 'normal'} as const )
+      }
+    }
+    newTiles.push(line)
+  }
+
+  return {...board, width: width, height: height, tiles: newTiles}
+}
+
+export { newBoard, toggleTile, toggleFixTile, toggleDisableTile, toggleHightlight, resetBoard, setDecorator, setBoardSize };
