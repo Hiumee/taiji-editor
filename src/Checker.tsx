@@ -1,3 +1,4 @@
+import { debug } from "console";
 import { title } from "process";
 import { Board, Tile } from "./Board";
 
@@ -16,11 +17,11 @@ const checkMill = (board: Board, tile: Tile): boolean => {
 
     let count = 0
 
-    if (up.active === tile.active) { count++ }
-    if (down.active === tile.active) { count++ }
-    if (left.active === tile.active) { count++ }
-    if (right.active === tile.active) { count++ }
-    
+    if (up.state !== 'disabled' && up.active === tile.active) { count++ }
+    if (down.state !== 'disabled' && down.active === tile.active) { count++ }
+    if (left.state !== 'disabled' && left.active === tile.active) { count++ }
+    if (right.state !== 'disabled' && right.active === tile.active) { count++ }
+
     return tile.decorator.type.includes(`${count}`)
 }
 
