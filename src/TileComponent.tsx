@@ -43,6 +43,7 @@ function TileComponent({tile, hoverCallback, mouseDownCallback}: props) {
           { (tile.decorator && tile.state !== 'disabled') &&
             (
             tile.decorator.type.includes("mill") ?
+              // eslint-disable-next-line jsx-a11y/alt-text
               <img className="decorator" src={`./symbols/${tile.decorator.type}.png`} />
             :
               <ImageFilter

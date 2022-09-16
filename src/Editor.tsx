@@ -53,7 +53,7 @@ function Editor() {
   }
 
   const handleTileHover = (tile: Tile) => {
-    setLastHoverTile({x: tile.x, y: tile.y})
+    setLastHoverTile({x: tile.y, y: tile.x})
     if (!controls.editMode) {
       if (controls.fillMode === "active" && tile.state === 'normal' && controls.mouseDown) {
         setBoard(toggleTile(board, tile, controls.activeFill))

@@ -1,5 +1,3 @@
-import { debug } from "console";
-import { title } from "process";
 import { Board, Tile } from "./Board";
 
 const getTile = (board: Board, x: number, y: number): Tile => {

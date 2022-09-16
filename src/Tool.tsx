@@ -19,6 +19,7 @@ function Tool({controls, setTool, name, tool, image}: props) {
         <>
         {
         image.includes("mill") ?
+        // eslint-disable-next-line jsx-a11y/alt-text
         <img className="decorator-tool" src={`./symbols/${image}.png`} />
         :
         <ImageFilter
