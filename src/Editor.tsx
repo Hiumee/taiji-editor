@@ -2,14 +2,16 @@ import { useState } from 'react';
 import html2canvas from 'html2canvas';
 import './Editor.css';
 import Tiles from './Tiles';
-import { newBoard, Tile, toggleDisableTile, toggleFixTile, toggleTile, toggleHightlight, resetBoard } from './Board';
-import { newControls, controlsMouseUp, controlsSetActiveFill, controlsMouseDown, controlsEnableEditMode, controlsDisableEditMode, controlsSetTool, controlsSetSize, controlsSetFillMode } from './Controls';
+import { newBoard, Tile, toggleDisableTile, toggleFixTile, toggleTile, toggleHightlight, resetBoard, setDecorator } from './Board';
+import { newControls, controlsMouseUp, controlsSetActiveFill, controlsMouseDown, controlsEnableEditMode, controlsDisableEditMode, controlsSetTool, controlsSetSize, controlsSetFillMode, controlsSetColor } from './Controls';
 import Tools from './Tools';
+import { checkBoardSolution } from './Checker';
 
 function Editor() {
   const [controls, setControls] = useState(newControls());
   const [board, setBoard] = useState(newBoard(controls.width,controls.height));
   const [lastHoverTile, setLastHoverTile] = useState({x: 0, y: 0})
+  const [checkResult, setCheckResult] = useState("Result here")
 
   const preventDragHandler = (e: any) => {
     e.preventDefault();
@@ -33,13 +35,21 @@ function Editor() {
           break;
         case "disable":
           setBoard(toggleDisableTile(board, tile))
+          break;
+        default:
+          setBoard(setDecorator(board, tile, {type: controls.tool, color: controls.color}))
+          break;
       }
     }
   }
 
   const handleTileMiddleClick = (tile: Tile) => {
-    setBoard(toggleHightlight(board, tile, !tile.highlighted))
-    setControls(controlsSetFillMode(controlsMouseDown(controlsSetActiveFill(controls, !tile.highlighted)), "highlight"))
+    if (!controls.editMode) {
+      setBoard(toggleHightlight(board, tile, !tile.highlighted))
+      setControls(controlsSetFillMode(controlsMouseDown(controlsSetActiveFill(controls, !tile.highlighted)), "highlight"))
+    } else {
+      setBoard(setDecorator(board, tile, {type: '', color: ''}))
+    }
   }
 
   const handleTileHover = (tile: Tile) => {
@@ -107,6 +117,15 @@ function Editor() {
     }
   }
 
+  const selectColor = (color: string) => {
+    setControls(controlsSetColor(controls, color))
+  }
+
+  const checkSolution = () => {
+    const wrongTiles = checkBoardSolution(board)
+    setCheckResult((wrongTiles.length === 0 ? 'Correct' : 'Wrong'))
+  }
+
   return (
     <div className="editor" onMouseUp={() => setControls(controlsMouseUp(controls))} 
       onDragStart={preventDragHandler}
@@ -121,8 +140,9 @@ function Editor() {
       <div className='controls'>
         <div className='normal-controls'>
           <button className='screenshot' onClick={openScreenshot}>Screenshot</button>
+          <button className='Check' onClick={checkSolution}>{checkResult}</button>
         </div>
-        <Tools onEditToggle={toggleEditMode} updateSize={updateSize} controls={controls} setTool={setTool} />
+        <Tools onEditToggle={toggleEditMode} updateSize={updateSize} controls={controls} setTool={setTool} selectColor={selectColor} />
       </div>
     </div>
   );

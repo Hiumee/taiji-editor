@@ -5,11 +5,12 @@ export interface Controls {
   tool: string,
   width: number,
   height: number,
-  fillMode: "active" | "highlight"
+  fillMode: "active" | "highlight",
+  color: string
 }
 
 function newControls(): Controls {
-  return { mouseDown: false, activeFill: false, editMode: false, tool: "fixer", width: 10, height: 10, fillMode: 'active' }
+  return { mouseDown: false, activeFill: false, editMode: false, tool: "fixer", width: 10, height: 10, fillMode: 'active', color: '#000000' }
 }
 
 function controlsMouseUp(controls: Controls): Controls {
@@ -44,4 +45,8 @@ function controlsSetFillMode(controls: Controls, fillMode: "active" | "highlight
   return {...controls, fillMode: fillMode}
 }
 
-export { newControls, controlsMouseUp, controlsMouseDown, controlsSetActiveFill, controlsEnableEditMode, controlsDisableEditMode, controlsSetTool, controlsSetSize, controlsSetFillMode };
+function controlsSetColor(controls: Controls, color: string) {
+  return {...controls, color: color}
+}
+
+export { newControls, controlsMouseUp, controlsMouseDown, controlsSetActiveFill, controlsEnableEditMode, controlsDisableEditMode, controlsSetTool, controlsSetSize, controlsSetFillMode, controlsSetColor };

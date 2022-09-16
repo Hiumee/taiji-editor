@@ -10,7 +10,7 @@ interface props {
 
 function Tiles({ board, onTileHover, onTileClick }: props) {
   return (
-    <div className='tiles' id="board">
+    <div className='tiles no-select' id="board">
       {
         board.tiles.map(
           (line) => 

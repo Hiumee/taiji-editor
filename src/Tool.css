@@ -4,15 +4,21 @@
   align-items: center;
   justify-content: center;
   background-color: white;
-  border-radius: 5px;
+  border-radius: 2px;
   border-color: black;
   border-width: 2px;
   border-style: solid;
-  margin: 5px;
+  margin: 2px;
   aspect-ratio: 1;
   cursor: pointer;
 }
 
 .current {
   border-style: dashed;
+}
+
+.decorator-tool {
+  width: 90%;
+  height: 90%;
+  image-rendering: pixelated;
 }

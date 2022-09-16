@@ -1,0 +1,15 @@
+.color-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.color {
+    width: 10px;
+    height: 10px;
+}
+
+.selected {
+    width: 14px;
+    height: 14px;
+}

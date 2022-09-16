@@ -50,6 +50,9 @@
   background-color: #404040;
   width: 85%;
   height: 85%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .active {
@@ -70,4 +73,10 @@
 
 .highlight.tile-border:hover {
   background-color: rgb(255, 147, 255);
+}
+
+.decorator {
+  width: 75%;
+  height: 75%;
+  image-rendering: pixelated;
 }

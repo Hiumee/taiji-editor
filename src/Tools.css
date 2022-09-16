@@ -76,10 +76,22 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
+.color-picker {
+  padding-top: 10px;
+  display: grid;
+  grid-template-columns: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
+}
+
 .picker {
   padding-top: 10px;
   display: grid;
   grid-template-columns: 50% 50%;
+}
+
+.multi-picker {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  grid-template-rows: 33% 33% 33%;
 }
 
 .size-container {
