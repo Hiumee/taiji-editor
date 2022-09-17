@@ -23,3 +23,9 @@
   display: grid;
   grid-template-columns: 50% 50%;
 }
+
+.puzzle-open {
+  margin-top: 50px;
+  margin-left: 10px;
+  width: 100px;
+}

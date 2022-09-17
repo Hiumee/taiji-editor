@@ -11,17 +11,25 @@ function Editor() {
   const [controls, setControls] = useState(newControls());
   const [board, setBoard] = useState(newBoard(controls.width, controls.height));
   const [lastHoverTile, setLastHoverTile] = useState({ x: 0, y: 0 })
-  const [checkResult, setCheckResult] = useState("Result here")
+  const [checkResult, setCheckResult] = useState("Result")
   const [incorrectTiles, setIncorrectTiles] = useState<Tile[]>([])
+  const [showEditMode, setShowEditMode] = useState(true)
+  const [puzzleCode, setPuzzleCode] = useState("")
 
   useEffect(() => {
     const windowUrl = window.location.search;
     const params = new URLSearchParams(windowUrl);
     const map = params.get('m')
 
+    if (params.get("p") !== null) {
+      setShowEditMode(false)
+    }
+
     if (map) {
       try {
-        const loadedBoard = loadMap(map.replaceAll(' ', '+'))
+        const mapCode = map.replaceAll(' ', '+')
+        const loadedBoard = loadMap(mapCode)
+        setPuzzleCode(mapCode)
         setBoard(loadedBoard)
         setControls(controlsSetSize(controls, loadedBoard.width, loadedBoard.height))
       } catch {}
@@ -157,6 +165,10 @@ function Editor() {
     setBoard(newBoard(controls.width, controls.height))
   }
 
+  const openPuzzle = (playMode: boolean) => {
+    window.location.href = `./?${playMode ? 'p&' : ''}m=${puzzleCode}`
+  }
+
   return (
     <div className="editor" onMouseUp={() => setControls(controlsMouseUp(controls))}
       onDragStart={preventDragHandler}
@@ -177,7 +189,15 @@ function Editor() {
           <button className='check' onClick={checkSolution}>Check</button>
           <div>{checkResult}</div>
         </div>
-        <Tools onEditToggle={toggleEditMode} updateSize={updateSize} controls={controls} setTool={setTool} selectColor={selectColor} clearBoard={clearBoard} />
+        { showEditMode &&
+          <Tools onEditToggle={toggleEditMode} updateSize={updateSize} controls={controls} setTool={setTool} selectColor={selectColor} clearBoard={clearBoard} />
+        }
+        <div className="puzzle-open">
+          Open puzzle
+          <input onChange={(e) => setPuzzleCode(e.target.value)} value={puzzleCode} />
+          <button onClick={() => openPuzzle(true)}>Play</button>
+          <button onClick={() => openPuzzle(false)}>Edit</button>
+        </div>
       </div>
     </div>
   );
