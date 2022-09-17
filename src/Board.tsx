@@ -102,6 +102,9 @@ function loadMap(map: string) {
     }
   }
 
+  if (tiles[tiles.length-1].length !== 0) {
+    throw new Error("Invalid code")
+  }
   tiles = tiles.slice(0, -1)
 
   return {width: width, height: tiles.length, tiles: tiles}

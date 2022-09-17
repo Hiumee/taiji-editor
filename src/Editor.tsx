@@ -20,10 +20,11 @@ function Editor() {
     const map = params.get('m')
 
     if (map) {
-      //TODO: catch errors
-      const loadedBoard = loadMap(map.replaceAll(' ', '+'))
-      setBoard(loadedBoard)
-      setControls(controlsSetSize(controls, loadedBoard.width, loadedBoard.height))
+      try {
+        const loadedBoard = loadMap(map.replaceAll(' ', '+'))
+        setBoard(loadedBoard)
+        setControls(controlsSetSize(controls, loadedBoard.width, loadedBoard.height))
+      } catch {}
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
