@@ -10,7 +10,7 @@ export interface Controls {
 }
 
 function newControls(): Controls {
-  return { mouseDown: false, activeFill: false, editMode: false, tool: "fixer", width: 10, height: 10, fillMode: 'active', color: '#000000' }
+  return { mouseDown: false, activeFill: false, editMode: false, tool: "fixer", width: 7, height: 7, fillMode: 'active', color: '#000000' }
 }
 
 function controlsMouseUp(controls: Controls): Controls {
