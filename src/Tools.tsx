@@ -36,7 +36,7 @@ function Tools({onEditToggle, controls, setTool, updateSize, selectColor, clearB
       <div className="color-picker">
         <Color selectColor={selectColor} color="#000000" selected={controls.color} />
         <Color selectColor={selectColor} color="#ff0000" selected={controls.color} />
-        <Color selectColor={selectColor} color="#0000ff" selected={controls.color} />
+        <Color selectColor={selectColor} color="#ff7f00" selected={controls.color} />
         <Color selectColor={selectColor} color="#00ff00" selected={controls.color} />
         <Color selectColor={selectColor} color="#d29a0e" selected={controls.color} />
         <Color selectColor={selectColor} color="#00ffff" selected={controls.color} />

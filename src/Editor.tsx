@@ -21,10 +21,11 @@ function Editor() {
 
     if (map) {
       //TODO: catch errors
-      const loadedBoard = loadMap(map)
+      const loadedBoard = loadMap(map.replaceAll(' ', '+'))
       setBoard(loadedBoard)
       setControls(controlsSetSize(controls, loadedBoard.width, loadedBoard.height))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const preventDragHandler = (e: any) => {
@@ -104,6 +105,7 @@ function Editor() {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const openScreenshot = () => {
     // TODO: Fix images not showing - Switch to svg?
     const boardElement = document.getElementById("board")
