@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import html2canvas from 'html2canvas';
 import './Editor.css';
 import Tiles from './Tiles';
-import { newBoard, Tile, toggleDisableTile, toggleFixTile, toggleTile, toggleHightlight, resetBoard, setDecorator, setBoardSize, loadMap } from './Board';
+import { newBoard, Tile, toggleDisableTile, toggleFixTile, toggleTile, toggleHightlight, resetBoard, setDecorator, setBoardSize, loadMap, saveMap } from './Board';
 import { newControls, controlsMouseUp, controlsSetActiveFill, controlsMouseDown, controlsEnableEditMode, controlsDisableEditMode, controlsSetTool, controlsSetSize, controlsSetFillMode, controlsSetColor } from './Controls';
 import Tools from './Tools';
 import { checkBoardSolution } from './Checker';
@@ -169,6 +169,10 @@ function Editor() {
     window.location.href = `./?${playMode ? 'p&' : ''}m=${puzzleCode}`
   }
 
+  const generateCode = () => {
+    setPuzzleCode(saveMap(board))
+  }
+
   return (
     <div className="editor" onMouseUp={() => setControls(controlsMouseUp(controls))}
       onDragStart={preventDragHandler}
@@ -197,6 +201,7 @@ function Editor() {
           <input onChange={(e) => setPuzzleCode(e.target.value)} value={puzzleCode} />
           <button onClick={() => openPuzzle(true)}>Play</button>
           <button onClick={() => openPuzzle(false)}>Edit</button>
+          <button onClick={() => generateCode()}>Get code</button>
         </div>
       </div>
     </div>

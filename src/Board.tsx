@@ -21,7 +21,9 @@ highlighted: boolean,
 const DECORATORS = { "A": 'dots-1', "B": 'dots-2', "C": 'dots-3', "D": 'dots-4', "E": 'dots-5', "F": 'dots-6', "G": 'dots-7', "H": 'dots-8', "I": 'dots-9', "J": 'undots-1',
   "K": 'undots-2', "L": 'undots-3', "M": 'undots-4', "N": 'undots-5', "O": 'undots-6', "P": 'undots-7', "Q": 'undots-8', "R": 'undots-9', "S": 'diamond', "T": 'line', "U": 'line-rot',
   "V": 'mill-0', "W": 'mill-1', "X": 'mill-2', "Y": 'mill-3', "Z": 'mill-4'}
+const DECORATORS_REV = { 'dots-1': "A", 'dots-2':  "B", 'dots-3':  "C", 'dots-4':  "D", 'dots-5':  "E", 'dots-6':  "F", 'dots-7':  "G", 'dots-8':  "H", 'dots-9':  "I", 'undots-1':  "J", 'undots-2':  "K", 'undots-3':  "L", 'undots-4':  "M", 'undots-5':  "N", 'undots-6':  "O", 'undots-7':  "P", 'undots-8':  "Q", 'undots-9':  "R", 'diamond':  "S", 'line':  "T", 'line-rot':  "U", 'mill-0':  "V", 'mill-1':  "W", 'mill-2':  "X", 'mill-3':  "Y",  "Z": 'mill-4'}
 const COLORS = { "r": "#ff0000", "o": "#ff7f00", "y": "#d29a0e", "g": "#00ff00", "b": "#00ffff", "p": "#a106ff", "w": "#000000", "k": "#ffffff" }
+const COLORS_rev = { "#ff0000": "r", "#ff7f00": "o", "#d29a0e": "y", "#00ff00": "g", "#00ffff": "b", "#a106ff": "p", "#000000": "w", "#ffffff": "k" }
 
 function newBoard(width: number = 3, height: number = 3): Board {
   let tiles: Array<Array<Tile>> = []
@@ -34,6 +36,37 @@ function newBoard(width: number = 3, height: number = 3): Board {
     tiles.push(line)
   }
   return { width: width, height: height, tiles: tiles }
+}
+
+function saveMap(board: Board) {
+  let code = `${board.width}:`
+  
+  for (let j=0; j<board.height; j++) {
+    for (let i=0; i<board.width; i++) {
+      const tile = board.tiles[j][i]
+
+      let options = 0
+      options += tile.state === "fixed" ? 4 : 0
+      options += tile.active ? 2 : 0
+      options = tile.state === "disabled" ? 8 : options
+
+      if (tile.decorator.type !== "") {
+        code += DECORATORS_REV[tile.decorator.type]
+        if (!tile.decorator.type.includes("mill")) {
+          code += COLORS_rev[tile.decorator.color]
+        }
+      }
+      code += options.toString()
+    }
+  }
+
+  // Compress
+  for (let i=26; i>1; i--) {
+    code = code.replaceAll("0".repeat(i), "+"+String.fromCharCode(64+i))
+    code = code.replaceAll("8".repeat(i), "-"+String.fromCharCode(64+i))
+  }
+
+  return code
 }
 
 function loadMap(map: string) {
@@ -55,7 +88,7 @@ function loadMap(map: string) {
   }
 
   while (data.includes("-")) {
-    const pi = data.indexOf("+")
+    const pi = data.indexOf("-")
     const count = data.charCodeAt(pi+1) - 64
     data = data.slice(0,pi) + '8'.repeat(count) + data.slice(pi+2)
   }
@@ -74,13 +107,13 @@ function loadMap(map: string) {
       }
 
       const option = parseInt(data[i])
-      const fiexd = option >> 2 === 1
+      const fixed = option >> 2 === 1
       const active = (option >> 1) % 2 === 1
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const hidden = (option % 2) === 1 // ignore for now
       const disabled = option === 8
 
-      if (fiexd && !disabled) {
+      if (fixed && !disabled) {
         tile = { ...tile, state: 'fixed' }
       }
       if (disabled) {
@@ -164,4 +197,4 @@ function setBoardSize(board: Board, width: number, height: number): Board {
   return {...board, width: width, height: height, tiles: newTiles}
 }
 
-export { newBoard, toggleTile, toggleFixTile, toggleDisableTile, toggleHightlight, resetBoard, setDecorator, setBoardSize, loadMap };
+export { newBoard, toggleTile, toggleFixTile, toggleDisableTile, toggleHightlight, resetBoard, setDecorator, setBoardSize, loadMap, saveMap };
