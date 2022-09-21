@@ -41,7 +41,7 @@ function TileComponent({tile, hoverCallback, mouseDownCallback, incorrect}: prop
     <div className='wrapper'>
       <div className={border} onMouseEnter={hoverCallback} onMouseDown={(e) => mouseDownCallback(e)}>
         <div className={tileClass}>
-          { (tile.decorator && tile.state !== 'disabled') &&
+          { (tile.decorator.type !== "" && tile.state !== 'disabled') &&
             (
             tile.decorator.type.includes("mill") ?
               // eslint-disable-next-line jsx-a11y/alt-text
