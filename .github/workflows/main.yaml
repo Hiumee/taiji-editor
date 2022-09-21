@@ -29,6 +29,7 @@ jobs:
         with:
           folder: build
           branch: master
+          token: ${{ secrets.TOKEN }}
           target-folder: react/taiji
           clean: true
           repository-name: Hiumee/hiumee.github.io
