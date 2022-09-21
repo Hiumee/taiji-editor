@@ -24,7 +24,7 @@ jobs:
       - name: Build
         run: npm run build --if-present
 
-      - run: Deploy
+      - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: build
