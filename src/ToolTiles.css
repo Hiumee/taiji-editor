@@ -1,0 +1,7 @@
+.toolTiles {
+    background: #404040;
+    padding: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}

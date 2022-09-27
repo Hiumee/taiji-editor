@@ -10,6 +10,13 @@
   border-width: 2px;
 }
 
+.signs-container {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
 .toggle-field {
   display: flex;
   flex-direction: row;

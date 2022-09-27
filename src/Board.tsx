@@ -1,17 +1,19 @@
 export interface Board {
   width: number,
   height: number,
-  tiles: Array<Array<Tile>>
+  tiles: Tile[][]
+  signs: Tile[]
 }
 
 export interface Decorator {
   type: string
   color: string
+  movable?: boolean
 }
 
 export interface Tile {
   active: boolean,
-highlighted: boolean,
+  highlighted: boolean,
   decorator: Decorator,
   x: number,
   y: number,
@@ -26,7 +28,7 @@ const COLORS = { "r": "#ff0000", "o": "#ff7f00", "y": "#d29a0e", "g": "#00ff00",
 const COLORS_rev = { "#ff0000": "r", "#ff7f00": "o", "#d29a0e": "y", "#00ff00": "g", "#00ffff": "b", "#a106ff": "p", "#000000": "w", "#ffffff": "k" }
 
 function newBoard(width: number = 3, height: number = 3): Board {
-  let tiles: Array<Array<Tile>> = []
+  let tiles: Tile[][] = []
   for (let i = 0; i<height; i++) {
     let line: Array<Tile> = []
     for (let j = 0; j<width; j++) {
@@ -35,10 +37,93 @@ function newBoard(width: number = 3, height: number = 3): Board {
     }
     tiles.push(line)
   }
-  return { width: width, height: height, tiles: tiles }
+  return { width: width, height: height, tiles: tiles, signs: [] }
 }
 
-function saveMap(board: Board) {
+function saveSigns(signs: Tile[]): string {
+  let code = ""
+
+  for (let i=0; i<signs.length; i++) {
+    const tile = signs[i]
+
+    let options = 0
+    options += tile.state === "fixed" ? 4 : 0
+    options += tile.active ? 2 : 0
+    options = tile.state === "disabled" ? 8 : options
+
+    if (tile.decorator.type !== "") {
+      code += DECORATORS_REV[tile.decorator.type]
+      if (!tile.decorator.type.includes("mill")) {
+        code += COLORS_rev[tile.decorator.color]
+      }
+    }
+
+    code += options.toString()
+  }
+
+  return code
+}
+
+
+function loadSigns(data: string): Tile[] {
+  // https://github.com/sangchoo1201/taiji_maker/blob/master/src/file.py
+  let tiles: Tile[] = []
+  
+  let i = 0;
+  let col = 0;
+
+  while (data.includes("+")) {
+    const pi = data.indexOf("+")
+    const count = data.charCodeAt(pi+1) - 64
+    data = data.slice(0,pi) + '0'.repeat(count) + data.slice(pi+2)
+  }
+
+  while (data.includes("-")) {
+    const pi = data.indexOf("-")
+    const count = data.charCodeAt(pi+1) - 64
+    data = data.slice(0,pi) + '8'.repeat(count) + data.slice(pi+2)
+  }
+
+  while (i < data.length) {
+    let tile: Tile = {active: false, highlighted: false, decorator: {type: "", color: "", movable: true}, x: col, y: -1, state: 'normal'} as const
+    col++
+
+    if (data[i] !== '0') {
+      if (65 <= data.charCodeAt(i) && data.charCodeAt(i) <= 90) {
+        tile.decorator.type = DECORATORS[data[i]]
+        i++
+      }
+      if ("roygbpkw".includes(data[i])) {
+        tile.decorator.color = COLORS[data[i]]
+        i++
+      }
+
+      const option = parseInt(data[i])
+      const fixed = option >> 2 === 1
+      const active = (option >> 1) % 2 === 1
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const hidden = (option % 2) === 1 // ignore for now
+      const disabled = option === 8
+
+      if (fixed && !disabled) {
+        tile = { ...tile, state: 'fixed' }
+      }
+      if (disabled) {
+        tile = { ...tile, state: 'disabled' }
+      }
+      if (active) {
+        tile = { ...tile, active: active }
+      }
+    }
+    i++
+
+    tiles.push(tile)
+  }
+
+  return tiles
+}
+
+function saveMap(board: Board): string {
   let code = `${board.width}:`
   
   for (let j=0; j<board.height; j++) {
@@ -69,7 +154,7 @@ function saveMap(board: Board) {
   return code
 }
 
-function loadMap(map: string) {
+function loadMap(map: string): Board {
   // https://github.com/sangchoo1201/taiji_maker/blob/master/src/file.py
   const segments = map.split(":")
   const width = parseInt(segments[0])
@@ -140,7 +225,7 @@ function loadMap(map: string) {
   }
   tiles = tiles.slice(0, -1)
 
-  return {width: width, height: tiles.length, tiles: tiles}
+  return {width: width, height: tiles.length, tiles: tiles, signs: []}
 }
 
 function toggleTile(board: Board, toggleTile: Tile, fill: boolean): Board {
@@ -162,6 +247,9 @@ function toggleDisableTile(board: Board, toggleTile: Tile): Board {
 }
 
 function toggleHightlight(board: Board, toggleTile: Tile, state: boolean): Board {
+  if (toggleTile.y === -1) {
+    return {...board, signs: board.signs.map(tile => tile.x === toggleTile.x ? {...tile, highlighted: !tile.highlighted} : tile)}
+  }
   return {...board, tiles: board.tiles.map(line => (
     line.map(tile => (tile === toggleTile ? {...tile, highlighted: state} : tile))
   ))}
@@ -174,6 +262,9 @@ function resetBoard(board: Board): Board {
 }
 
 function setDecorator(board: Board, toggleTile: Tile, decorator: Decorator): Board {
+  if (toggleTile.y === -1) {
+    return {...board, signs: board.signs.map(tile => tile.x === toggleTile.x ? {...tile, decorator: (decorator.type !== tile.decorator.type || decorator.color !== tile.decorator.color) ? {...decorator, movable: true} : {type: '', color: ''} } : tile)}
+  }
   return {...board, tiles: board.tiles.map(line => (
     line.map(tile => (tile === toggleTile ? {...tile, decorator: (decorator.type !== tile.decorator.type || decorator.color !== tile.decorator.color) ? decorator : {type: '', color: ''} } : tile))
   ))}
@@ -197,4 +288,30 @@ function setBoardSize(board: Board, width: number, height: number): Board {
   return {...board, width: width, height: height, tiles: newTiles}
 }
 
-export { newBoard, toggleTile, toggleFixTile, toggleDisableTile, toggleHightlight, resetBoard, setDecorator, setBoardSize, loadMap, saveMap };
+function addSign(board: Board): Board {
+  return {...board, signs: [...board.signs, {active: false, highlighted: false, decorator: {type: "", color: "", movable: true}, x: board.signs.length, y: -1, state: "normal"}]}
+}
+
+function removeSign(board: Board): Board {
+  return {...board, signs: board.signs.slice(0,-1)}
+}
+
+function fixAll(board: Board): Board {
+  return {...board, tiles: board.tiles.map(line =>
+    line.map( tile => {
+      if (tile.state === "normal") {
+        return {...tile, state: "fixed"}
+      }
+      if (tile.state === "fixed") {
+        return {...tile, state: "normal"}
+      }
+      return tile;
+    })
+  )}
+}
+
+function setSigns(board: Board, signs: Tile[]): Board {
+  return {...board, signs: signs}
+}
+
+export { newBoard, toggleTile, toggleFixTile, toggleDisableTile, toggleHightlight, resetBoard, setDecorator, setBoardSize, loadMap, saveMap, addSign, removeSign, fixAll, loadSigns, saveSigns, setSigns };

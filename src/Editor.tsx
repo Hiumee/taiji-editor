@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import html2canvas from 'html2canvas';
 import './Editor.css';
 import Tiles from './Tiles';
-import { newBoard, Tile, toggleDisableTile, toggleFixTile, toggleTile, toggleHightlight, resetBoard, setDecorator, setBoardSize, loadMap, saveMap } from './Board';
+import { newBoard, Tile, toggleDisableTile, toggleFixTile, toggleTile, toggleHightlight, resetBoard, setDecorator, setBoardSize, loadMap, saveMap, addSign, removeSign, fixAll, setSigns, saveSigns, loadSigns } from './Board';
 import { newControls, controlsMouseUp, controlsSetActiveFill, controlsMouseDown, controlsEnableEditMode, controlsDisableEditMode, controlsSetTool, controlsSetSize, controlsSetFillMode, controlsSetColor } from './Controls';
 import Tools from './Tools';
-import { checkBoardSolution } from './Checker';
+import { checkAllSignsUsed, checkBoardSolution } from './Checker';
+import ToolTiles from './ToolTiles';
 
 function Editor() {
   const [controls, setControls] = useState(newControls());
@@ -15,11 +16,14 @@ function Editor() {
   const [incorrectTiles, setIncorrectTiles] = useState<Tile[]>([])
   const [showEditMode, setShowEditMode] = useState(true)
   const [puzzleCode, setPuzzleCode] = useState("")
+  const [holdingSign, setHoldingSign] = useState<Tile>()
+  const [signsCode, setSignsCode] = useState("")
 
   useEffect(() => {
     const windowUrl = window.location.search;
     const params = new URLSearchParams(windowUrl);
     const map = params.get('m')
+    const signs = params.get('s')
 
     if (params.get("p") !== null) {
       setShowEditMode(false)
@@ -30,7 +34,12 @@ function Editor() {
         const mapCode = map.replaceAll(' ', '+')
         const loadedBoard = loadMap(mapCode)
         setPuzzleCode(mapCode)
-        setBoard(loadedBoard)
+        if (signs) {
+          setSignsCode(signs)
+          setBoard(setSigns(loadedBoard, loadSigns(signs)))
+        } else {
+          setBoard(loadedBoard)
+        }
         setControls(controlsSetSize(controls, loadedBoard.width, loadedBoard.height))
       } catch {}
     }
@@ -44,10 +53,22 @@ function Editor() {
   const handleTileClick = (tile: Tile) => {
     setIncorrectTiles([])
     if (!controls.editMode) {
-      if (tile.state === 'normal') {
-        setBoard(toggleTile(board, tile, !tile.active));
+      if (tile.decorator.movable && tile.decorator.type !== "") {
+        if (tile.decorator.type !== "") {
+          setHoldingSign(tile)
+        }
+      } else {
+        if (holdingSign && tile.decorator.type === "") {
+          setBoard(setDecorator(setDecorator(board, tile, { type: holdingSign.decorator.type, color: holdingSign.decorator.color, movable: true }), holdingSign, {type: "", color: ""}))
+          setHoldingSign(undefined)
+        }
+        else {
+          if (tile.state === 'normal') {
+            setBoard(toggleTile(board, tile, !tile.active));
+          }
+          setControls(controlsSetFillMode(controlsMouseDown(controlsSetActiveFill(controls, !tile.active)), "active"))
+        }
       }
-      setControls(controlsSetFillMode(controlsMouseDown(controlsSetActiveFill(controls, !tile.active)), "active"))
     } else {
       switch (controls.tool) {
         case "fixer":
@@ -136,8 +157,13 @@ function Editor() {
       setBoard(resetBoard(board))
     } else if (e.keyCode === 77) { // M
       if (!controls.mouseDown) {
-        const tile = board.tiles[lastHoverTile.x][lastHoverTile.y]
-        handleTileMiddleClick(tile)
+        if (lastHoverTile.x === -1) {
+          const tile = board.signs[lastHoverTile.y]
+          handleTileMiddleClick(tile)
+        } else {
+          const tile = board.tiles[lastHoverTile.x][lastHoverTile.y]
+          handleTileMiddleClick(tile)
+        }
       }
     } else if (e.keyCode === 32) { // Space
       checkSolution()
@@ -157,7 +183,8 @@ function Editor() {
 
   const checkSolution = () => {
     const wrongTiles = checkBoardSolution(board)
-    setCheckResult((wrongTiles.length === 0 ? 'Correct' : 'Wrong'))
+    const usedAll = checkAllSignsUsed(board)
+    setCheckResult((wrongTiles.length === 0 && usedAll ? 'Correct' : 'Wrong'))
     setIncorrectTiles(wrongTiles)
   }
 
@@ -166,11 +193,12 @@ function Editor() {
   }
 
   const openPuzzle = (playMode: boolean) => {
-    window.location.href = `./?${playMode ? 'p&' : ''}m=${puzzleCode}`
+    window.location.href = `./?${playMode ? 'p&' : ''}${board.signs.length > 0 ? 's='+signsCode+'&' : ''}m=${puzzleCode}`
   }
 
   const generateCode = () => {
     setPuzzleCode(saveMap(board))
+    setSignsCode(saveSigns(board.signs))
   }
 
   return (
@@ -179,12 +207,21 @@ function Editor() {
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       tabIndex={0}>
-      <Tiles
-        board={board}
-        onTileClick={(event: any, tile: Tile) => { event.button === 0 ? handleTileClick(tile) : (event.button === 1 && handleTileMiddleClick(tile)) }}
-        onTileHover={(tile: Tile) => { handleTileHover(tile) }}
-        incorrectTiles={incorrectTiles}
-      />
+      <div>
+        { board.signs.length > 0 &&
+          <ToolTiles 
+            onTileClick={(event: any, tile: Tile) => { event.button === 0 ? handleTileClick(tile) : (event.button === 1 && handleTileMiddleClick(tile)) }}
+            onTileHover={(tile: Tile) => { handleTileHover(tile) }}
+            board={board}
+          />
+        }
+        <Tiles
+          board={board}
+          onTileClick={(event: any, tile: Tile) => { event.button === 0 ? handleTileClick(tile) : (event.button === 1 && handleTileMiddleClick(tile)) }}
+          onTileHover={(tile: Tile) => { handleTileHover(tile) }}
+          incorrectTiles={incorrectTiles}
+        />
+      </div>
       <div className='controls'>
         <div className='normal-controls'>
           {
@@ -194,7 +231,17 @@ function Editor() {
           <div>{checkResult}</div>
         </div>
         { showEditMode &&
-          <Tools onEditToggle={toggleEditMode} updateSize={updateSize} controls={controls} setTool={setTool} selectColor={selectColor} clearBoard={clearBoard} />
+          <Tools
+            onEditToggle={toggleEditMode}
+            updateSize={updateSize}
+            controls={controls}
+            setTool={setTool}
+            selectColor={selectColor}
+            clearBoard={clearBoard}
+            addSign={() => controls.editMode && setBoard(addSign(board))}
+            removeSign={() => controls.editMode && setBoard(removeSign(board))}
+            fixAll={() => setBoard(fixAll(board))}
+          />
         }
         <div className="puzzle-open">
           Open puzzle

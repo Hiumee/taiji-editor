@@ -10,9 +10,12 @@ interface props {
   updateSize: (width: number, height: number) => void
   selectColor: (color: string) => void
   clearBoard: () => void
+  addSign: () => void
+  removeSign: () => void
+  fixAll: () => void
 }
 
-function Tools({onEditToggle, controls, setTool, updateSize, selectColor, clearBoard}: props) {
+function Tools({onEditToggle, controls, setTool, updateSize, selectColor, clearBoard, addSign, removeSign, fixAll}: props) {
 
   const mainClass = `${controls.editMode ? 'active-background' : 'inactive-background'} tools`;
 
@@ -32,6 +35,11 @@ function Tools({onEditToggle, controls, setTool, updateSize, selectColor, clearB
       <div className='size-container'>
         Width <input className="size-input" type="number" min={1} onChange={(e: any) => updateSize(e.target.value, controls.height)} value={controls.width}></input>
         Height <input className="size-input" type="number" min={1} onChange={(e: any) => updateSize(controls.width, e.target.value)} value={controls.height}></input>
+      </div>
+      <div className='signs-container'>
+        <button onClick={addSign}>Add sign</button>
+        <button onClick={removeSign}>Remove sign</button>
+        <button onClick={fixAll}>Toggle all fixed</button>
       </div>
       <div className="color-picker">
         <Color selectColor={selectColor} color="#000000" selected={controls.color} />

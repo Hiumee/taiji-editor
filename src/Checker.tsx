@@ -303,4 +303,8 @@ const checkBoardSolution = (board: Board): Tile[] => {
     return wrongTiles;
 }
 
-export { checkBoardSolution }
+const checkAllSignsUsed = (board: Board): boolean => {
+    return board.signs.reduce((empty: boolean, sign) => { return empty && sign.decorator.type === ""}, true)
+}
+
+export { checkAllSignsUsed, checkBoardSolution }

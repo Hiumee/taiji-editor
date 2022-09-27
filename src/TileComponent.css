@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 50px;
+  width: 50px;
 }
 
 .tile-border {
