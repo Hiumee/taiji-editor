@@ -22,19 +22,27 @@ function Editor() {
   useEffect(() => {
     const windowUrl = window.location.search;
     const params = new URLSearchParams(windowUrl);
-    const map = params.get('m')
-    const signs = params.get('s')
+    const code = params.get('m')
+    let signs = ""
 
     if (params.get("p") !== null) {
       setShowEditMode(false)
     }
 
-    if (map) {
+    if (code) {
+      const segments = code.split(":")
+      if (segments.length < 2) {
+        return
+      }
+      const map = segments[0]+":"+segments[1]
+      if (segments.length === 3) {
+        signs = segments[2]
+      }
       try {
         const mapCode = map.replaceAll(' ', '+')
         const loadedBoard = loadMap(mapCode)
         setPuzzleCode(mapCode)
-        if (signs) {
+        if (signs !== "") {
           setSignsCode(signs)
           setBoard(setSigns(loadedBoard, loadSigns(signs)))
         } else {
@@ -193,7 +201,7 @@ function Editor() {
   }
 
   const openPuzzle = (playMode: boolean) => {
-    window.location.href = `./?${playMode ? 'p&' : ''}${board.signs.length > 0 ? 's='+signsCode+'&' : ''}m=${puzzleCode}`
+    window.location.href = `./?${playMode ? 'p&' : ''}m=${puzzleCode}${board.signs.length > 0 ? ':'+signsCode : ''}`
   }
 
   const generateCode = () => {
@@ -245,7 +253,7 @@ function Editor() {
         }
         <div className="puzzle-open">
           Open puzzle
-          <input onChange={(e) => setPuzzleCode(e.target.value)} value={puzzleCode} />
+          <input onChange={(e) => setPuzzleCode(e.target.value)} value={`${puzzleCode}${signsCode !== "" ? ':'+signsCode : ''}`} />
           <button onClick={() => openPuzzle(true)}>Play</button>
           <button onClick={() => openPuzzle(false)}>Edit</button>
           <button onClick={() => generateCode()}>Get code</button>
